@@ -9,38 +9,28 @@
       <choice value="ethinicity">Ethinicity</choice>
       <default>all</default>
       <initialValue>all</initialValue>
-      
       <change>
         <condition label="Gender">
-          
           <set token="show_gender_graph"></set>
           <unset token="show_ethinicity_graph"></unset>
           <unset token="show_both_graph"></unset>
         </condition>
-        
         <condition value="ethinicity">
-          
           <set token="show_ethinicity_graph"></set>
           <unset token="show_gender_graph"></unset>
           <unset token="show_both_graph"></unset>
-          
         </condition>
-        
         <condition value="both">
-          
           <set token="show_both_graph"></set>
           <unset token="show_gender_graph"></unset>
           <unset token="show_ethinicity_graph"></unset>
         </condition>
-        
         <condition>
           <set token="show_gender_graph"></set>
           <set token="show_ethinicity_graph"></set>
           <set token="show_both_graph"></set>
         </condition>
-        
       </change>
-      
       <search>
         <query/>
         <earliest>-24h@h</earliest>
@@ -51,10 +41,32 @@
   <row>
     <panel depends="$show_gender_graph$">
       <title>Avg Score by Gender</title>
+      <input type="radio" token="score_by" searchWhenChanged="true">
+        <label>Score By</label>
+        <choice value="all">All</choice>
+        <choice value="math">Math</choice>
+        <choice value="reading">Reading</choice>
+        <choice value="writing">Writing</choice>
+        <default>all</default>
+        <initialValue>all</initialValue>
+        <change>
+          <condition value="all">
+            <set token="search_string1">stats avg("math score") as avg_math_score, avg("reading score") as avg_reading_score, avg("writing score") as avg_writing_score by gender</set>
+          </condition>
+          <condition value="math">
+            <set token="search_string1">stats avg("math score") as avg_math_score by gender</set>
+          </condition>
+          <condition value="reading">
+            <set token="search_string1">stats avg("reading score") as avg_reading_score by gender</set>
+          </condition>
+          <condition value="writing">
+            <set token="search_string1">stats avg("writing score") as avg_writing_score by gender</set>
+          </condition>
+        </change>
+      </input>
       <chart>
         <search>
-          <query>index="new_vk_idx" sourcetype="csv" source="StudentsPerformance.csv" 
-|  stats avg("math score") as avg_math_score, avg("reading score") as avg_reading_score, avg("writing score") as avg_writing_score by gender</query>
+          <query>index="new_vk_idx" sourcetype="csv" source="StudentsPerformance.csv" | $search_string1$</query>
           <earliest>0</earliest>
           <sampleRatio>1</sampleRatio>
         </search>
@@ -95,10 +107,69 @@
   <row>
     <panel depends="$show_ethinicity_graph$">
       <title>Avg Score by Ethnicity</title>
+      <input type="radio" token="all" searchWhenChanged="true">
+        <label></label>
+        <choice value="all">All</choice>
+        <change>
+          <condition value="all">
+            <set token="search_string2">stats avg("math score") as avg_math_score, avg("reading score") as avg_reading_score, avg("writing score") as avg_writing_score by race_ethnicity</set>
+            <unset token="math"></unset>
+            <unset token="form.math"></unset>
+            <unset token="reading"></unset>
+            <unset token="form.reading"></unset>
+            <unset token="writing"></unset>
+            <unset token="form.writing"></unset>
+          </condition>
+        </change>
+      </input>
+      <input type="radio" token="math" searchWhenChanged="true">
+        <label></label>
+        <choice value="math">Math</choice>
+         <change>
+          <condition value="math">
+            <set token="search_string2">stats avg("math score") as avg_math_score by race_ethnicity</set>
+            <unset token="all"></unset>
+            <unset token="form.all"></unset>
+            <unset token="reading"></unset>
+            <unset token="form.reading"></unset>
+            <unset token="writing"></unset>
+            <unset token="form.writing"></unset>
+          </condition>
+        </change>
+      </input>
+      <input type="radio" token="reading" searchWhenChanged="true">
+        <label></label>
+        <choice value="reading">Reading</choice>
+        <change>
+          <condition value="reading">
+            <set token="search_string2">stats avg("reading score") as avg_reading_score by race_ethnicity</set>
+            <unset token="math"></unset>
+            <unset token="form.math"></unset>
+            <unset token="all"></unset>
+            <unset token="form.all"></unset>
+            <unset token="writing"></unset>
+            <unset token="form.writing"></unset>
+          </condition>
+        </change>
+      </input>
+      <input type="radio" token="writing" searchWhenChanged="true">
+        <label></label>
+        <choice value="writing">Writing</choice>
+        <change>
+          <condition value="writing">
+            <set token="search_string2">stats avg("writing score") as avg_writing_score by race_ethnicity</set>
+            <unset token="math"></unset>
+            <unset token="form.math"></unset>
+            <unset token="all"></unset>
+            <unset token="form.all"></unset>
+            <unset token="reading"></unset>
+            <unset token="form.reading"></unset>
+          </condition>
+        </change>
+      </input>
       <chart>
         <search>
-          <query>index="new_vk_idx" sourcetype="csv" source="StudentsPerformance.csv" 
-|  stats avg("math score") as avg_math_score, avg("reading score") as avg_reading_score, avg("writing score") as avg_writing_score by race_ethnicity</query>
+          <query>index="new_vk_idx" sourcetype="csv" source="StudentsPerformance.csv" |  $search_string2$</query>
           <earliest>0</earliest>
           <sampleRatio>1</sampleRatio>
         </search>

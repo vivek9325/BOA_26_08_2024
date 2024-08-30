@@ -37,7 +37,92 @@
         <latest>now</latest>
       </search>
     </input>
+    <input type="dropdown" token="gender" searchWhenChanged="true">
+      <label>Gender</label>
+      <choice value="male">Male</choice>
+      <choice value="female">Female</choice>
+      <default>male</default>
+      <initialValue>male</initialValue>
+    </input>
   </fieldset>
+  <row>
+    <panel rejects="$hide_panel_male_single_val$">
+      <title>count by male</title>
+      <single>
+        <search>
+          <query>index="new_vk_idx" sourcetype="csv" source="StudentsPerformance.csv" gender="male" | stats count by gender 
+| where gender="$gender$" 
+| fields count</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <sampleRatio>1</sampleRatio>
+          <done>
+            <condition match="'job.resultCount'==0">
+              <set token="hide_panel_male_single_val"></set>
+            </condition>
+            <condition>
+              <unset token="hide_panel_male_single_val"></unset>
+            </condition>
+          </done>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel rejects="$hide_panel_female_single_val$">
+      <title>female count</title>
+      <single>
+        <search>
+          <query>index="new_vk_idx" sourcetype="csv" source="StudentsPerformance.csv" gender="female" | stats count by gender 
+| where gender="$gender$" 
+| fields count</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <sampleRatio>1</sampleRatio>
+          <done>
+            <condition match="'job.resultCount'==0">
+              <set token="hide_panel_female_single_val"></set>
+            </condition>
+            <condition>
+              <unset token="hide_panel_female_single_val"></unset>
+            </condition>
+          </done>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
   <row>
     <panel depends="$show_gender_graph$">
       <title>Avg Score by Gender</title>
@@ -125,7 +210,7 @@
       <input type="radio" token="math" searchWhenChanged="true">
         <label></label>
         <choice value="math">Math</choice>
-         <change>
+        <change>
           <condition value="math">
             <set token="search_string2">stats avg("math score") as avg_math_score by race_ethnicity</set>
             <unset token="all"></unset>
